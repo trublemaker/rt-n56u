@@ -234,3 +234,7 @@ endif
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_IPSET),y)
 CFLAGS += -DUSE_IPSET
 endif
+
+ifeq ($(CONFIG_RA_NAT_HW),y)
+CFLAGS += -DCONFIG_RA_NAT_HW
+endif

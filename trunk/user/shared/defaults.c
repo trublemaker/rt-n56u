@@ -318,6 +318,7 @@ struct nvram_pair router_defaults[] = {
 	{ "rt_HT_MpduDensity", "5" },
 	{ "rt_HT_BAWinSize", "64" },
 	{ "rt_HT_AutoBA", "1" },
+	{ "rt_LowErrRate", "0" },	
 	{ "rt_VgaClamp", "0" },
 
 	// guest AP 2.4Ghz
@@ -640,8 +641,8 @@ struct nvram_pair router_defaults[] = {
 	{ "sw_mode", "1" },
 #endif
 
-	{ "telnetd", "1" },
-	{ "sshd_enable", "0" },
+	{ "telnetd", "0" },
+	{ "sshd_enable", "1" },
 	{ "wins_enable", "0" },
 	{ "lltd_enable", "1" },
 	{ "adsc_enable", "0" },
@@ -726,7 +727,11 @@ struct nvram_pair router_defaults[] = {
 	{ "nf_nat_type", "2" },
 	{ "nf_nat_loop", "1" },
 #if (BOARD_RAM_SIZE > 128)
+    #if defined(CONFIG_RA_NAT_HW)
+	{ "nf_max_conn", "16384" }, /*HW_NAT FoE Max*/
+	#else
 	{ "nf_max_conn", "32768" },
+	#endif
 #elif (BOARD_RAM_SIZE > 32)
 	{ "nf_max_conn", "16384" },
 #else
