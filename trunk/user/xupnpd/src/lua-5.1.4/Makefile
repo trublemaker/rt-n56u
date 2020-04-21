@@ -8,7 +8,7 @@
 PLAT= none
 
 #CC= gcc
-CFLAGS= -O3 -Wall $(MYCFLAGS)
+CFLAGS= $(UOPT) -Wall $(MYCFLAGS)
 AR= ar rcu
 RANLIB= ranlib
 RM= rm -f
@@ -81,7 +81,7 @@ none:
 	@echo "   $(PLATS)"
 
 aix:
-	$(MAKE) all CC="xlc" CFLAGS="-O3 -DLUA_USE_POSIX -DLUA_USE_DLOPEN" MYLIBS="-ldl" MYLDFLAGS="-brtl -bexpall"
+	$(MAKE) all CC="xlc" CFLAGS="$(UOPT) -DLUA_USE_POSIX -DLUA_USE_DLOPEN" MYLIBS="-ldl" MYLDFLAGS="-brtl -bexpall"
 
 ansi:
 	$(MAKE) all MYCFLAGS=-DLUA_ANSI

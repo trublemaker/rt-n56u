@@ -15,8 +15,8 @@ oldmandir = $(manprefix)/man
 
 CC ?= gcc
 STRIP ?= strip
-
-CFLAGS := -Os -W -Wall -Wbad-function-cast -Wcast-align -Wpointer-arith -Wcast-qual -Wshadow -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -fkeep-inline-functions -Wwrite-strings -Waggregate-return -Wnested-externs -Wtrigraphs $(CFLAGS)
+UOPT ?= -Os
+CFLAGS := $(UOPT) -W -Wall -Wbad-function-cast -Wcast-align -Wpointer-arith -Wcast-qual -Wshadow -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -fkeep-inline-functions -Wwrite-strings -Waggregate-return -Wnested-externs -Wtrigraphs $(CFLAGS)
 ifdef HDPARM_MINI
 CFLAGS += -DHDPARM_MINI
 endif

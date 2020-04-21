@@ -2,7 +2,7 @@ SRC_NAME=minidlna-1.2.1
 SRC_URL=https://sourceforge.net/projects/minidlna/files/minidlna/1.2.1/minidlna-1.2.1.tar.gz 
 
 DLNA_CFLAGS  += -ffunction-sections -fdata-sections
-DLNA_CFLAGS  += -Os -Wall -g -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64
+DLNA_CFLAGS  +=  $(UOPT) -Wall -g -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64
 DLNA_CFLAGS  += -I$(STAGEDIR)/include
 
 DLNA_LDFLAGS += -Wl,--gc-sections
