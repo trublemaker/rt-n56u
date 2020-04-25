@@ -131,8 +131,12 @@ catch_sig_fatal(int sig)
 	sleep(1);
 	sync();
 
-	reboot(RB_AUTOBOOT);
-
+	#ifdef CONFIG_32M_REBOOT_FIXUP 
+		system("/bin/mtd_write -r unlock mtd1");
+	#else
+		reboot(RB_AUTOBOOT);
+	#endif
+	
 	do {
 		sleep(1);
 	} while (1);

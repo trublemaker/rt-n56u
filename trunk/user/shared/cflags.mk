@@ -238,3 +238,7 @@ endif
 ifeq ($(CONFIG_RA_NAT_HW),y)
 CFLAGS += -DCONFIG_RA_NAT_HW
 endif
+
+ifeq ($(CONFIG_32M_REBOOT_FIXUP),y)
+	CFLAGS += -DCONFIG_32M_REBOOT_FIXUP 
+endif
