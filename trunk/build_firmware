@@ -503,6 +503,7 @@ echo --------------------------MAKE-DEP--------------------------------
 make dep
 
 [ -e user/rc/common_ex.o ] && rm user/rc/common_ex.o
+[ -e user/shared/defaults.o ] && rm user/shared/defaults.o
 
 echo --------------------------MAKE-ALL--------------------------------
 make $@
