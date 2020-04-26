@@ -8,9 +8,10 @@ include $(ROOTDIR)/user/shared/boards.mk
 
 #PROJECT_HOME_URL="https:\/\/bitbucket.org\/padavan\/rt-n56u\/"
 #https://pan.baidu.com/s/1cbsMrvD60L7f2pzUhuaIdA 提取码：b5ml
+#链接：https://pan.baidu.com/s/1oEG9jSRs31ijtJnoufKIkg 提取码：umof 
 
-PROJECT_HOME_URL="https:\/\/pan.baidu.com\/s\/1cbsMrvD60L7f2pzUhuaIdA"
-LABEL_COPYRIGHT_TEXT="© 2011-2016 Padavan \& N56U project community"
+PROJECT_HOME_URL="https:\/\/pan.baidu.com\/s\/1oEG9jSRs31ijtJnoufKIkg"
+LABEL_COPYRIGHT_TEXT="© 2011-2020 Padavan \& N56U project community"
 
 BOARD_PATTERN=s/ZVMODELVZ/$(CONFIG_FIRMWARE_PRODUCT_ID)/g
 COPYR_PATTERN=s/ZVCOPYRVZ/$(LABEL_COPYRIGHT_TEXT)/g
