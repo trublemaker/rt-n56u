@@ -748,7 +748,7 @@ write_data( const struct dstream_ctx* spc,
                 (void)tmfprintf( g_flog, "Write on fd=[%d] timed out\n", fd);
                 error = IO_BLK;
             }
-            mperror( g_flog, errno, "%s: writev", __func__ );
+            /*mperror( g_flog, errno, "%s: writev", __func__ );*/
             return error;
         }
     }
