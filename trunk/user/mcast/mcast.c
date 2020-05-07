@@ -44,10 +44,12 @@
 
 //CCTV-12高清 239.93.1.30:8124
 
-#define MCAST_PORT    8000
-#define MCAST_ADDR    "239.93.0.1"
+#define MCAST_PORT    8224
+#define MCAST_ADDR    "239.93.1.251"
 
-#define LOCAL_ADDR    "eth2"
+//#define LOCAL_ADDR    "eth2.9"
+char LOCAL_ADDR[64] = "eth2.9";
+//viptv_ifname=eth2.9
 
 /*一个局部连接多播地址，路由器不进行转发*/
 
@@ -60,6 +62,7 @@
 int
 set_nblock(int fd, int set) {
 	int flags = 0;
+	printf("%s: fcntl() getting flags on fd=[%d].\n",	__func__, fd);
 
 	flags = fcntl(fd, F_GETFL, 0);
 	if (flags < 0) {
@@ -79,8 +82,6 @@ set_nblock(int fd, int set) {
 		        fd );
 		return -1;
 	}
-	printf("%s: fcntl() getting flags on fd=[%d]",
-		__func__, fd);
 	return 0;
 }
 
@@ -112,7 +113,7 @@ int main_normal(int argc, char*argv[]) {
 	}
 
 	if (0 != get_ipv4_address(mladdr, mladdr, sizeof(mladdr))) {
-		perror("get multicast address error.");
+		perror("Get multicast address error ." );
 		return -1;
 	}
 	else {
@@ -183,83 +184,47 @@ int main_normal(int argc, char*argv[]) {
 
 	int addr_len = 0;
 
-	char buff[BUFF_SIZE];
+	unsigned char buff[BUFF_SIZE]={0};
 
 	int n = 0;
 
-	set_nblock(s, 1);
+	set_nblock(s, 0);
 
-	fd_set read_fds;  //读文件操作符
-	fd_set exception_fds; //异常文件操作符
-	FD_ZERO(&read_fds);
-	FD_ZERO(&exception_fds);
 	int ret = 0;
 
 	/*循环接收广播组的消息，5000次后退出*/
 
-	FD_SET(s, &read_fds);
-	FD_SET(s, &exception_fds);
-
+	addr_len = sizeof(rcv_addr);
+	
 	for (times = 0; 1; times++) //times<50000
 	{
-		addr_len = sizeof(rcv_addr);
 		//memset(buff, 0, BUFF_SIZE); /*清空接收缓冲区*/
 
-		//memset(&rcv_addr, 0, sizeof (rcv_addr));		
-
-		ret = select(s + 1, &read_fds, NULL, &exception_fds, NULL);
-		if (ret < 0)
-		{
-			printf("Fail to select!\n");
-			return -1;
-		}
-
-
-		if (FD_ISSET(s, &read_fds))
-		{
-			ret = recv(s, buff, sizeof(buff) - 1, 0);
-			if (ret <= 0)
-			{
-				break;
-			}
-
-			//printf("get %d bytes of normal data: %x \n", ret, (long)buff[0]);
-
-		}
-		else if (FD_ISSET(s, &exception_fds)) //异常事件
-		{
-			ret = recv(s, buff, sizeof(buff) - 1, MSG_OOB);
-			if (ret <= 0)
-			{
-				break;
-			}
-
-			//printf("get %d bytes of exception data: %s \n", ret, buff);
-		}
+		//memset(&rcv_addr, 0, sizeof(rcv_addr));
 
 		/*接收数据*/
-		//n = recvfrom(s, buff, BUFF_SIZE, 0, (struct sockaddr*) &rcv_addr,  &addr_len);
-		//n = read( s, buff, sizeof(buff) );
-
+		//n = recvfrom(s, buff, BUFF_SIZE, 0, (struct sockaddr*) &rcv_addr,	&addr_len);
+		n = recv(s, buff, BUFF_SIZE, 0);
+		
 		if (n == -1) {
-			//perror("recvfrom()");
+			perror("recvfrom()");
 		}
 		else /*打印信息*/ {
-			//if (n > 0)buff[n] = 0;
-			//if (n > 10)buff[10] = 0;
+			if (n > 0)buff[n] = 0;
+			//if (n > 6)buff[6] = 0;
 
-			//printf("Recv %4d st, %d bytes from server: [%08X]\n",
-			//    times, n,
-			//    (long)buff[0] );
+			printf("Recv %5d pack, %d bytes, [%08x]......\n",
+				times, n,
+				 ntohl(*(int*)&buff[0])
+				);
 		}
 
-		//sleep(MCAST_INTERVAL);
+		sleep(0);
 	}
 
 	/*退出广播组*/
 
-	err = setsockopt(s, IPPROTO_IP, IP_DROP_MEMBERSHIP, &mreq, sizeof
-	(mreq));
+	err = setsockopt(s, IPPROTO_IP, IP_DROP_MEMBERSHIP, &mreq, sizeof(mreq));
 
 	close(s);
 
@@ -370,7 +335,7 @@ int main_select(int argc, char*argv[]) {
 
 	int n = 0;
 
-	set_nblock(s, 1);
+	set_nblock(s, 0);
 
 	fd_set read_fds;  //读文件操作符
 	fd_set exception_fds; //异常文件操作符
@@ -627,8 +592,24 @@ int main_epoll(int argc, char*argv[]) {
 }
 
 int main(int argc, char*argv[]) {
-	printf("main_epoll: %d.\n", argc);
+	//viptv_ifname=eth2.9
+	FILE *wget;
+	char ok_code[] = "ok";
+	char wget_content[1024];
+	wget=popen("nvram  get viptv_ifname","r");
+	fgets(wget_content, sizeof(wget_content),wget);
+	
+	if(strlen(wget_content) <=0 ){
+		printf("no iptv interface, return.\n");
+		return -1;
+	}
+	//if(strcmp(wget_content, wait_code) == 0)
+	{
+		printf("iptv interface: %s\n",wget_content);
+	}
 
-	main_select(argc, argv);
+	//main_select(argc, argv);
+	main_normal(argc, argv);
+	//main_epoll(argc, argv);
 	return 0;
 }
