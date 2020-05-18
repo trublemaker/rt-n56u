@@ -109,13 +109,13 @@ static const char *rps_iflist[] = {
 #define VPNS_RPS_MAP_2	SMP_MASK_CPU0
 
 static const struct smp_irq_layout_t mt7621a_irq[] = {
-	{ GIC_IRQ_FE,    SMP_MASK_CPU1 },	/* GMAC  -> CPU:0, VPE:1 */
-	{ GIC_IRQ_EIP93, SMP_MASK_CPU1 },	/* EIP93 -> CPU:0, VPE:1 */
-	{ GIC_IRQ_PCIE0, SMP_MASK_CPU2 },	/* PCIe0 -> CPU:1, VPE:0 (usually rai0) */
+	{ GIC_IRQ_FE,    SMP_MASK_CPU2 },	/* GMAC  -> CPU:0, VPE:1 */
+	{ GIC_IRQ_EIP93, SMP_MASK_CPU0 },	/* EIP93 -> CPU:0, VPE:1 */
+	{ GIC_IRQ_PCIE0, SMP_MASK_CPU1 },	/* PCIe0 -> CPU:1, VPE:0 (usually rai0) */
 	{ GIC_IRQ_PCIE1, SMP_MASK_CPU3 },	/* PCIe1 -> CPU:1, VPE:1 (usually ra0) */
-	{ GIC_IRQ_PCIE2, SMP_MASK_CPU0 },	/* PCIe2 -> CPU:0, VPE:0 (usually ahci) */
-	{ GIC_IRQ_SDXC,  SMP_MASK_CPU2 },	/* SDXC  -> CPU:1, VPE:0 */
-	{ GIC_IRQ_XHCI,  SMP_MASK_CPU3 },	/* xHCI  -> CPU:1, VPE:1 */
+	{ GIC_IRQ_PCIE2, SMP_MASK_CPU3 },	/* PCIe2 -> CPU:0, VPE:0 (usually ahci) */
+	{ GIC_IRQ_SDXC,  SMP_MASK_CPU1 },	/* SDXC  -> CPU:1, VPE:0 */
+	{ GIC_IRQ_XHCI,  SMP_MASK_CPU0 },	/* xHCI  -> CPU:1, VPE:1 */
 };
 
 static const struct smp_irq_layout_t mt7621s_irq[] = {
