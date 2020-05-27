@@ -70,6 +70,8 @@ fi
 
 achk_enable=`nvram get achk_enable`
 
+#logger "FS_TYPE:$ID_FS_TYPE dev_full:$dev_full dev_mount:$dev_mount"
+
 if [ "$ID_FS_TYPE" == "msdos" -o "$ID_FS_TYPE" == "vfat" ] ; then
 	if [ "$achk_enable" != "0" ] && [ -x /sbin/dosfsck ] ; then
 		/sbin/dosfsck -a -v "$dev_full" > "/tmp/dosfsck_result_$1" 2>&1
@@ -137,6 +139,12 @@ elif [ "$ID_FS_TYPE" == "ext4" -o "$ID_FS_TYPE" == "ext3" -o "$ID_FS_TYPE" == "e
 	mount -t $ID_FS_TYPE -o noatime "$dev_full" "$dev_mount"
 elif [ "$ID_FS_TYPE" == "xfs" ] ; then
 	func_load_module xfs
+	mount -t $ID_FS_TYPE -o noatime "$dev_full" "$dev_mount"
+elif [ "$ID_FS_TYPE" == "reiserfs" ] ; then
+	func_load_module reiserfs
+	mount -t $ID_FS_TYPE -o noatime "$dev_full" "$dev_mount"
+elif [ "$ID_FS_TYPE" != "" ] ; then
+	func_load_module $ID_FS_TYPE
 	mount -t $ID_FS_TYPE -o noatime "$dev_full" "$dev_mount"
 fi
 
