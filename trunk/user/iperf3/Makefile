@@ -18,7 +18,7 @@ extract_test:
 			git clone $(SRC_URL) $(SRC_NAME); \
 	   else \
 			cd $(SRC_NAME) ; \
-			git pull ;\
+			##git pull ;\
 	fi )
 	
 config_test:
@@ -34,6 +34,7 @@ configure:
 	sed -i 's/iperf3_profile_LDFLAGS = -pg -g//' src/Makefile.in ; \
 	./configure \
 		--prefix=/usr \
+		--without-openssl \
 		--host=$(HOST_TARGET) \
 		--build=$(HOST_BUILD) ; \
 	)

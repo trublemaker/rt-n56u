@@ -15,7 +15,7 @@ __avm_antfs_commit = $(shell $(GIT_CMD) rev-parse --short HEAD)
 #ANTFS_LOGLEVEL_DEFAULT ?= $(if $(__avm_non_stable),ANTFS_LOGLEVEL_ERR_EXT,ANTFS_LOGLEVEL_ERR)
 #ANTFS_VERSION ?= $(if $(__avm_non_stable),$(__avm_antfs_commit),$(__avm_antfs_tag))
 
-ANTFS_LOGLEVEL_DEFAULT ?= ANTFS_LOGLEVEL_ERR
+ANTFS_LOGLEVEL_DEFAULT = ANTFS_LOGLEVEL_DBG
 
 #default ANTFS_LOGLEVEL_ERR
 
@@ -30,7 +30,7 @@ ANTFS_LOGLEVEL_DEFAULT ?= ANTFS_LOGLEVEL_ERR
 ANTFS_VERSION ?= 07.19
 
 ccflags-y += -DANTFS_LOGLEVEL_DEFAULT=$(ANTFS_LOGLEVEL_DEFAULT)
-ccflags-y += -DANTFS_VERSION='"$(ANTFS_VERSION)"'
+ccflags-y += -DANTFS_VERSION='"$(ANTFS_VERSION)-$(ANTFS_LOGLEVEL_DEFAULT)"'
 
 ccflags-y += -I$(src)
 ccflags-y += -I$(src)/include

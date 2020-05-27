@@ -50,8 +50,8 @@ fi
 
 if [ "$CONFIG_FIRMWARE_INCLUDE_ANTFS" = "y" ] ; then
 	antfs_dir="${ROOTDIR}/user/antfs"
-	mkdir -p "${INSTALL_MOD_PATH}/lib/modules/${KERNELRELEASE}/kernel/antfs"
-	cp -f "$antfs_dir/"antfs.ko "${INSTALL_MOD_PATH}/lib/modules/${KERNELRELEASE}/kernel/antfs"
+	mkdir -p "${INSTALL_MOD_PATH}/lib/modules/${KERNELRELEASE}/kernel/fs/antfs"
+	cp -f "$antfs_dir/"antfs.ko "${INSTALL_MOD_PATH}/lib/modules/${KERNELRELEASE}/kernel/fs/antfs"
 fi
 
 # call depmod
