@@ -137,6 +137,8 @@ static const uint8_t len_of_option_as_string[] = {
 	[OPTION_S32             ] = sizeof("-2147483684 "),
 };
 
+static uint32_t server_id=0;
+
 /* note: ip is a pointer to an IP in network order, possibly misaliged */
 static int sprint_nip(char *dest, const char *pre, const uint8_t *ip)
 {
@@ -422,6 +424,9 @@ static NOINLINE char *xmalloc_optname_optval(uint8_t *option, const struct dhcp_
 	return ret;
 }
 
+
+
+
 /* put all the parameters into the environment */
 static char **fill_envp(struct dhcp_packet *packet)
 {
@@ -498,6 +503,17 @@ static char **fill_envp(struct dhcp_packet *packet)
 		sprint_nip(*curr, "siaddr=", (uint8_t *) &packet->siaddr_nip);
 		putenv(*curr++);
 	}
+
+	if(server_id){
+		/* IP address of next server to use in bootstrap */
+		*curr = xmalloc(sizeof("siaddr=255.255.255.255"));
+		sprint_nip(*curr, "server_id=", (uint8_t *) &server_id);
+
+		bb_info_msg("server_id  : %s",	 *curr);
+		putenv(*curr++);
+		//add_route(packet,server_id);
+	}
+	
 	if (!(overload & FILE_FIELD) && packet->file[0]) {
 		/* watch out for invalid packets */
 		*curr = xasprintf("boot_file=%."DHCP_PKT_FILE_LEN_STR"s", packet->file);
@@ -617,7 +633,9 @@ static void add_client_options(struct dhcp_packet *packet)
 	len = sizeof(struct ip_udp_dhcp_packet);
 	if (client_config.client_mtu > 0)
 		len = MIN(client_config.client_mtu, len);
-	udhcp_add_simple_option(packet, DHCP_MAX_SIZE, htons(len));
+	
+	//mao -- 2020.07.08
+	//udhcp_add_simple_option(packet, DHCP_MAX_SIZE, htons(len));
 
 	/* Add a "param req" option with the list of options we'd like to have
 	 * from stubborn DHCP servers. Pull the data from the struct in common.c.
@@ -1254,7 +1272,6 @@ static void client_background(void)
 //usage:     "\n	USR1	Renew lease"
 //usage:     "\n	USR2	Release lease"
 
-
 int udhcpc_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
 int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 {
@@ -1714,6 +1731,11 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 				} else {
 					/* it IS unaligned sometimes, don't "optimize" */
 					move_from_unaligned32(server_addr, temp);
+					bb_error_msg("server ID, using %X", server_addr);
+					//packet.server_id = server_addr;
+					server_id = server_addr;
+
+					//add_route(&packet,server_addr);
 				}
 				/*xid = packet.xid; - already is */
 				requested_ip = packet.yiaddr;
@@ -1786,7 +1808,7 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 #endif
 				/* enter bound state */
 				temp_addr.s_addr = packet.yiaddr;
-				bb_info_msg("Lease of %s obtained, lease time %u",
+				bb_info_msg("Lease of %s obtained., lease time %u",
 					inet_ntoa(temp_addr), (unsigned)lease_seconds);
 				requested_ip = packet.yiaddr;
 

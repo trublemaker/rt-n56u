@@ -48,6 +48,7 @@
 #define SCRIPT_DHCP6C_WAN		"/tmp/dhcp6c.script"
 
 #define SCRIPT_POST_WAN			"/etc/storage/post_wan_script.sh"
+#define SCRIPT_POST_IPTV			"/etc/storage/post_iptv_script.sh"
 #define SCRIPT_POST_FIREWALL		"/etc/storage/post_iptables_script.sh"
 #define SCRIPT_INTERNET_STATE		"/etc/storage/inet_state_script.sh"
 #define SCRIPT_SHUTDOWN			"/etc/storage/shutdown_script.sh"

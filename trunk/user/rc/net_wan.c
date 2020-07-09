@@ -1273,11 +1273,19 @@ wan_up(char *wan_ifname, int unit, int is_static)
 	set_wan_unit_value(unit, "uptime", wan_cnt);
 
 	if (modem_unit_id || wan_proto != IPV4_WAN_PROTO_IPOE_STATIC) {
+		#if defined (USE_SINGLE_MAC)
 		snprintf(wan_cnt, sizeof(wan_cnt), "%llu", get_ifstats_bytes_rx(wan_ifname));
 		set_wan_unit_value(unit, "bytes_rx", wan_cnt);
 		
 		snprintf(wan_cnt, sizeof(wan_cnt), "%llu", get_ifstats_bytes_tx(wan_ifname));
 		set_wan_unit_value(unit, "bytes_tx", wan_cnt);
+		#else
+		snprintf(wan_cnt, sizeof(wan_cnt), "%llu", get_ifstats_bytes_rx(wan_ifname));
+		set_wan_unit_value(unit, "bytes_rx", wan_cnt);
+		
+		snprintf(wan_cnt, sizeof(wan_cnt), "%llu", get_ifstats_bytes_tx(wan_ifname));
+		set_wan_unit_value(unit, "bytes_tx", wan_cnt);
+		#endif
 	}
 
 	wan_addr = get_wan_unit_value(unit, "ipaddr");
@@ -2218,7 +2226,7 @@ udhcpc_bound(char *wan_ifname, int is_renew_mode)
 static int
 udhcpc_viptv_bound(char *man_ifname, int is_renew_mode)
 {
-	char *value, *lan_ip, *lan_nm, *ip, *nm, *gw, *rt, *rt_ms, *rt_rfc;
+	char *value, *lan_ip, *lan_nm, *ip, *nm, *gw, *rt, *rt_ms, *rt_rfc, *server_id;
 	char tmp[100], prefix[16], log_prefix[32], *udhcpc_state;
 	int lease_dur, is_changed, i_err, dhcp_mtu;
 
@@ -2237,6 +2245,8 @@ udhcpc_viptv_bound(char *man_ifname, int is_renew_mode)
 	rt = "";
 	rt_ms = "";
 	rt_rfc = "";
+
+	server_id="255.255.255.255";
 
 	if ((value = getenv("ip")))
 		ip = trim_r(value);
@@ -2261,7 +2271,12 @@ udhcpc_viptv_bound(char *man_ifname, int is_renew_mode)
 
 	if ((value = getenv("routes")))
 		rt = trim_r(value);
-
+	
+	if ((value = getenv("server_id"))){
+		server_id = trim_r(value);	
+		nvram_set_temp(strcat_r(prefix, "server_id", tmp), server_id);
+	}
+	
 	if ((value = getenv("msstaticroutes")))
 		rt_ms = trim_r(value);
 
@@ -2307,6 +2322,21 @@ udhcpc_viptv_bound(char *man_ifname, int is_renew_mode)
 		/* default route via default gateway (metric 10) */
 		if (is_valid_ipv4(gw))
 			route_add(man_ifname, 10, "0.0.0.0", gw, "0.0.0.0");
+
+		if(!is_renew_mode){
+			route_add(man_ifname, 1, server_id, gw, "255.255.255.255");
+			logmessage(log_prefix,
+				"%s (%s), Add Route[%s] to DHCP Server[%s].", 
+				udhcpc_state, man_ifname, gw, server_id);	
+		
+			if (check_if_file_exist(SCRIPT_POST_IPTV))
+				doSystem("%s %s %s %s", SCRIPT_POST_IPTV, udhcpc_state, man_ifname, gw);
+
+			//ip route add 182.0.0.0/8 via 10.132.0.1
+		}else{	
+			if (check_if_file_exist(SCRIPT_POST_IPTV))
+				doSystem("%s %s %s %s", SCRIPT_POST_IPTV, udhcpc_state, man_ifname, gw);
+		}
 		
 		start_igmpproxy(man_ifname);
 	}
