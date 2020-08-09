@@ -94,16 +94,37 @@ elif [ "$ID_FS_TYPE" == "ntfs" ] ; then
 	fi
 	kernel_ufsd=`modprobe -l | grep ufsd`
 	kernel_antfs=`modprobe -l | grep antfs`
-	if [ -n "$kernel_antfs" ]; then
-		func_load_module antfs
-		mount -t antfs "$dev_full" "$dev_mount" -o noatime,utf8
-	elif [ -n "$kernel_ufsd" ] ; then
-		func_load_module ufsd
-		mount -t ufsd "$dev_full" "$dev_mount" -o noatime,sparse,nls=utf8,force
-	elif [ -x /sbin/ntfs-3g ] ; then
-		/sbin/ntfs-3g "$dev_full" "$dev_mount" -o noatime,umask=0,big_writes
-		if [ $? -ne 0 ] ; then
-			/sbin/ntfs-3g "$dev_full" "$dev_mount" -o noatime,umask=0,ro
+
+	func_load_module antfs
+	func_load_module ufsd
+	
+	ntfs_type=`nvram get ntfs_type`
+	logger -t ntfs_type "$ntfs_type"
+	if [ -n "$ntfs_type" ]; then
+		if [ "$ntfs_type" == "ufsd"  ] ; then
+			#logger -t ntfs_type "ufsd 1"
+			mount -t ufsd "$dev_full" "$dev_mount" -o noatime,sparse,nls=utf8,force
+		elif [ "$ntfs_type" == "antfs"  ] ; then
+			#logger -t ntfs_type "antfs 1"
+			mount -t antfs "$dev_full" "$dev_mount" -o noatime,utf8
+		elif ["$ntfs_type" == "ntfs-3g"  ] ; then
+				/sbin/ntfs-3g "$dev_full" "$dev_mount" -o noatime,umask=0,big_writes
+			if [ $? -ne 0 ] ; then
+				/sbin/ntfs-3g "$dev_full" "$dev_mount" -o noatime,umask=0,ro
+			fi
+		fi
+	else
+		if [ -n "$kernel_ufsd" ]; then
+			#logger -t ntfs_type "ufsd 2"
+			mount -t ufsd "$dev_full" "$dev_mount" -o noatime,sparse,nls=utf8,force
+		elif [ -n "$kernel_antfs" ] ; then
+			#logger -t ntfs_type "antfs 2"
+			mount -t antfs "$dev_full" "$dev_mount" -o noatime,utf8
+		elif [ -x /sbin/ntfs-3g ] ; then
+			/sbin/ntfs-3g "$dev_full" "$dev_mount" -o noatime,umask=0,big_writes
+			if [ $? -ne 0 ] ; then
+				/sbin/ntfs-3g "$dev_full" "$dev_mount" -o noatime,umask=0,ro
+			fi
 		fi
 	fi
 elif [ "$ID_FS_TYPE" == "hfsplus" -o "$ID_FS_TYPE" == "hfs" ] ; then

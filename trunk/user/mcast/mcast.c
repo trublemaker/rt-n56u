@@ -35,6 +35,8 @@
 
 #include "ifaddr.h"
 
+#include <zlib.h>
+
 //CCTV8HD 239.93.1.14.2225
 //239.93.0.1:8000
 //8000, "239.93.0.1"
@@ -212,9 +214,24 @@ int main_normal(int argc, char*argv[]) {
 		else /*´òÓ¡ÐÅÏ¢*/ {
 			if (n > 0)buff[n] = 0;
 			//if (n > 6)buff[6] = 0;
-
-			printf("Recv %5d pack, %d bytes, [%08x]......\n",
-				times, n,
+			
+			//int compress(Bytef *dest, uLongf *destLen, const Bytef *source, uLong sourceLen);
+			//int compress2(Bytef *dest, uLongf *destLen, const Bytef *source, uLongsourceLen, int level); 
+			char  dest[2000];
+			uLongf destLen=2000;
+			int val=0;
+			
+			val = compress2(dest, &destLen, buff, n,5);
+			
+			if(val == Z_OK){
+			 printf("Recv %5d pack, %d bytes, compress to %d bytes. ......\n",
+					times, n,
+					(int)destLen
+				);
+			}
+			else
+			printf("%d *Recv %5d pack, %d bytes, [%08x]......\n",
+				val , times, n,
 				 ntohl(*(int*)&buff[0])
 				);
 		}
