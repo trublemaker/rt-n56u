@@ -40,8 +40,8 @@
 #define SDAY		(60 * 60 * 24)
 
 #define MAX_NSPEED	((24 * SHOUR) / RSTATS_INTERVAL)
-#define MAX_NDAILY	62
-#define MAX_NMONTHLY	25
+#define MAX_NDAILY	 90
+#define MAX_NMONTHLY 90
 
 #if !defined(RSTATS_SKIP_ESW)
 #define MAX_SPEED_IF	(IFDESCS_MAX_NUM + BOARD_NUM_ETH_EPHY)
@@ -365,6 +365,7 @@ static void save_data_js(FILE *fp, const history_t *ph, int mode)
 		p = ph->monthlyp;
 		max = MAX_NMONTHLY;
 	}
+	//printf("%s_history , max=%d\n", (mode == DAILY) ? "daily" : "monthly",max);
 
 	fprintf(fp, "%s_history = [\n", (mode == DAILY) ? "daily" : "monthly");
 	for (k = max; k > 0; --k) {
@@ -393,7 +394,7 @@ static void save_history_json(long next_time)
 		next_time = RSTATS_INTERVAL;
 
 	netdev = nvram_safe_get(RSTATS_NVKEY_DM);
-
+	
 	wan_idx = 0;
 	for (i = 0; i < MAX_HISTORY_IF; i++) {
 		if (strcmp(g_history_desc[i].ifdesc, netdev) == 0) {
@@ -448,12 +449,14 @@ static void bump_history(data_t *data, int *tail, int max, uint32_t xnow, uint64
 		for (i = max - 1; i >= 0; --i) {
 			if (data[i].xtime == xnow) {
 				t = i;
+				printf("t=%i,break\n", t);
 				break;
 			}
 		}
 		if (i < 0) {
 			*tail = t = (t + 1) % max;
 			data[t].xtime = xnow;
+			printf("t=%d,new\n",t);
 			memset(data[t].counter, 0, sizeof(data[0].counter));
 		}
 	}
