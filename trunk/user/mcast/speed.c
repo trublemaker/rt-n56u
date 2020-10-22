@@ -125,12 +125,12 @@ int main(int argc, char** argv) {
     printf("NetWorkRate Statistic Verson 0.0.1\n");
     printf("Net Device	receive rate	send rate\n");
 
-    gettimeofday(&tv_pre, NULL);
+    clock_gettime(CLOCK_BOOTTIME ,&tv_pre );
     GetNetRate(fd, netdevice, &recvpre, &sendpre);
 
     while (1) {
         sleep(1);
-        gettimeofday(&tv_now, NULL);
+        clock_gettime(CLOCK_BOOTTIME ,&tv_now );
         GetNetRate(fd, netdevice, &recvcur, &sendcur);
         
 		deltatime =tv_now.tv_sec + tv_now.tv_usec * 0.000001 - tv_pre.tv_sec - tv_pre.tv_usec * 0.000001;
@@ -149,7 +149,7 @@ int main(int argc, char** argv) {
 		recvpre = recvcur;
 		sendpre = sendcur;
 		
-		gettimeofday(&tv_pre, NULL);
+		clock_gettime(CLOCK_BOOTTIME ,&tv_pre );
     }
     fclose(fd);
     return 0;
