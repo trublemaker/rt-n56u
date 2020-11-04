@@ -1,5 +1,6 @@
-SRC_NAME=util-linux-2.33.1
-SRC_URL=https://www.kernel.org/pub/linux/utils/util-linux/v2.33/util-linux-2.33.1.tar.xz
+SRC_NAME=util-linux-2.35.1
+#SRC_URL=https://www.kernel.org/pub/linux/utils/util-linux/v2.33/util-linux-2.33.1.tar.xz
+SRC_URL=https://www.kernel.org/pub/linux/utils/util-linux/v2.35/util-linux-2.35.1.tar.xz
 
 THISDIR = $(shell pwd)
 
@@ -30,7 +31,7 @@ download_test:
 extract_test:
 	( if [ ! -d $(SRC_NAME) ]; then \
 		tar xJf $(SRC_NAME).tar.xz; \
-		patch -d $(SRC_NAME) -p1 -i ../libblkid.patch; \
+		#patch -d $(SRC_NAME) -p1 -i ../libblkid.patch; \
 	fi )
 
 config_test:
