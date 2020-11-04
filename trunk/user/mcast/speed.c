@@ -93,7 +93,7 @@ int GetNetRate(FILE* fd, char *interface, long long *recv, long long *send) {
 
 int main(int argc, char** argv) {
 
-    struct timeval tv_now, tv_pre;
+    struct timespec tv_now, tv_pre;
     char netdevice[16] = {0};
     int nDevLen;
     long long recvpre = 0, recvcur = 0;
@@ -125,15 +125,15 @@ int main(int argc, char** argv) {
     printf("NetWorkRate Statistic Verson 0.0.1\n");
     printf("Net Device	receive rate	send rate\n");
 
-    clock_gettime(CLOCK_BOOTTIME ,&tv_pre );
+    clock_gettime(CLOCK_MONOTONIC ,&tv_pre );
     GetNetRate(fd, netdevice, &recvpre, &sendpre);
 
     while (1) {
         sleep(1);
-        clock_gettime(CLOCK_BOOTTIME ,&tv_now );
+        clock_gettime(CLOCK_MONOTONIC ,&tv_now );
         GetNetRate(fd, netdevice, &recvcur, &sendcur);
         
-		deltatime =tv_now.tv_sec + tv_now.tv_usec * 0.000001 - tv_pre.tv_sec - tv_pre.tv_usec * 0.000001;
+		deltatime =tv_now.tv_sec + tv_now.tv_nsec * 0.000001 - tv_pre.tv_sec - tv_pre.tv_nsec * 0.000001;
 		
 		recvrate = (recvcur - recvpre) / (1024 * deltatime);        
 		if (recvrate < 0) recvrate = 0; 
@@ -149,7 +149,7 @@ int main(int argc, char** argv) {
 		recvpre = recvcur;
 		sendpre = sendcur;
 		
-		clock_gettime(CLOCK_BOOTTIME ,&tv_pre );
+		clock_gettime(CLOCK_MONOTONIC ,&tv_pre );
     }
     fclose(fd);
     return 0;

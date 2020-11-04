@@ -1,10 +1,11 @@
-EXEC = mcast speed rsconv
+EXEC = mcast speed rsconv settime
 
 CC ?= mipsel-linux-uclibc-gcc 
 
 CFLAGS += $(UOPT) -O3 #-s
 #CFLAGS += -g
-LDFLAGS = -s -lz -L/home/mao/smb/k2p/rt-n56u.hanwckf.new3/trunk/libs/libz/zlib-1.2.11/
+LDFLAGS = -s 
+#-lz -L/home/mao/smb/k2p/rt-n56u.hanwckf.new3/trunk/libs/libz/zlib-1.2.11/
 
 #CFLAGS += $(if $(CONFIG_RAETH_GMAC2),,-DUSE_SINGLE_MAC)
 
@@ -26,10 +27,16 @@ speed: speed.o
 	
 rsconv: rsconv.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
-	
+
+settime: settime.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)	
+
 romfs:
 	$(ROMFSINST) mcast /usr/bin/mcast
 	$(ROMFSINST) speed /usr/bin/speed
+	$(ROMFSINST) rsconv /usr/bin/rsconv
+	$(ROMFSINST) settime /usr/bin/settime
+	
 clean:
 	rm -f $(EXEC) *.o
 

@@ -44,7 +44,7 @@ int main(int argc, char** argv){
     	int f,fd;
 	int n,r;
         mode_t m;
-        int i;
+        int i,p;
         
         history_t_new new;
         history_t_old old;
@@ -58,25 +58,35 @@ int main(int argc, char** argv){
 	if ((f = open("rstats-history", O_RDONLY)) < 0) return -1;
 	n = read(f, &old, sizeof(history_t_old));
 	close(f);
-        
-        //memcpy(&new,&old,sizeof(old));
+	
+	m = umask(0);
+	if ((f = open("rstats-history.back", O_WRONLY|O_CREAT|O_TRUNC, 0666)) >= 0) {
+            r = write(f, &old, sizeof(history_t_old));
+            close(f);
+	}        
+    umask(m);
+    //memcpy(&new,&old,sizeof(old));
         
         //new.id = old.id;
         new.id = old.id ;
         new.dailyp = 62;//old.dailyp ;
         new.monthlyp = 25;//old.monthlyp;
         
-        printf("%08x-%08x-%08x  \n",old.id,old.dailyp, old.monthlyp);
+        printf("id:%08x , p %4d-%4d  \n",old.id, old.dailyp, old.monthlyp);
            
         for( i =0 ;i < 62; i ++){
             new.daily[i]=old.daily[i];
+			if(new.daily[i].xtime==0){
+			}
         }        
         for( i =0 ;i < 25; i ++){
             new.monthly[i]=old.monthly[i];
+			if(new.daily[i].xtime==0){
+			}
         }
            
 	m = umask(0);
-	if ((fd = open("new", O_WRONLY|O_CREAT|O_TRUNC, 0666)) >= 0) {
+	if ((fd = open("rstats-history", O_WRONLY|O_CREAT|O_TRUNC, 0666)) >= 0) {  
             r = write(fd, &new, sizeof(history_t_new));
             close(fd);
 	}
