@@ -40,7 +40,7 @@
 #define SDAY		(60 * 60 * 24)
 
 #define MAX_NSPEED	((24 * SHOUR) / RSTATS_INTERVAL)
-#define MAX_NDAILY	 90
+#define MAX_NDAILY	 62
 #define MAX_NMONTHLY 90
 
 #if !defined(RSTATS_SKIP_ESW)
