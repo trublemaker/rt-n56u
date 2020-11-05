@@ -1,4 +1,4 @@
-SRC_NAME=3proxy-0.8.12
+SRC_NAME=3proxy-git
 
 all:
 	$(MAKE) -C $(SRC_NAME) -f Makefile.mips
