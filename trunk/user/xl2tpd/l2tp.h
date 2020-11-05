@@ -97,7 +97,7 @@ struct payload_hdr
                                    so we can "decompress" the
                                    payloads and simplify coding */
 
-#define DEFAULT_MAX_RETRIES  5   /* Recommended value from spec */
+#define DEFAULT_MAX_RETRIES  50   /* Recommended value from spec */
 
 #define DEFAULT_RWS_SIZE	8    /* Default max outstanding control packets in queue */
 #define DEFAULT_TX_BPS		100000000        /* For outgoing calls, report this speed */

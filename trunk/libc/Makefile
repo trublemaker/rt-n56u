@@ -38,6 +38,7 @@ romfs:
 	$(STRIP) $(DESTDIR)/bin/ldd ; \
 	$(STRIP) $(DESTDIR)/sbin/ldconfig ; \
 	cp -fP $(DESTDIR)/bin/ldd $(ROMFSDIR)/bin ; \
+	cp -fP $(DESTDIR)/sbin/ldconfig $(ROMFSDIR)/sbin ; \
 	cp -fP $(DESTDIR)/lib/libcrypt.so* $(ROMFSDIR)/lib ; \
 	cp -fP $(DESTDIR)/lib/libcrypt-*.so $(ROMFSDIR)/lib ; \
 	cp -fP $(DESTDIR)/lib/libdl*.so* $(ROMFSDIR)/lib ; \
