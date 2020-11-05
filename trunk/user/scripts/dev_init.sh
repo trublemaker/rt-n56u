@@ -62,7 +62,10 @@ mkdir -p -m 750 /etc/Wireless/iNIC
 mtd_storage.sh load
 
 touch /etc/resolv.conf
-cp -f /etc_ro/ld.so.cache /etc
+
+#new ldconfig,could not gen ld.so.cache normaly,mao++2020.11.04
+#cp -f /etc_ro/ld.so.cache /etc
+/sbin/ldconfig
 
 if [ -f /etc_ro/openssl.cnf ]; then
 	cp -f /etc_ro/openssl.cnf /etc/ssl
