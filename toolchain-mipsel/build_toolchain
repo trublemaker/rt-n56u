@@ -22,6 +22,8 @@ if [ -f /proc/cpuinfo ] ; then
     [ $HOST_NCPU -lt 1 ] && HOST_NCPU=1
 fi
 
+echo HOST_NCPU=${HOST_NCPU}
+
 ID_BINUTILS="binutils-$BINUTILSVER"
 ID_GCC="gcc-$GCCVER"
 ID_UCLIBC="uClibc-$UCLIBCVER"
@@ -133,7 +135,7 @@ if [ "$DO_BINUTILS" = "YES" ]; then
     (../$ID_BINUTILS/configure --target=$TARGET --prefix="$PREFIX" \
         --with-sysroot="$PREFIX" --with-build-sysroot="$PREFIX" \
         --disable-nls --disable-werror --disable-multilib &&
-    make -j${HOST_NCPU} && \
+    make -j${HOST_NCPU} > /dev/null 2>&1 && \
     make install) || exit 1
     cd ..
 fi
@@ -149,16 +151,17 @@ if [ "$DO_GCC" = "YES" ]; then
         --disable-libgomp --disable-nls \
         --with-sysroot="$PREFIX" \
         --enable-languages=c && \
-    make -j${HOST_NCPU} && \
-    make install) || exit 1
+	make -j${HOST_NCPU} > /dev/null 2>&1 && \
+    make install > /dev/null 2>&1 ) || exit 1
     cd ..
 fi
 
 if [ "$DO_UCLIBC" = "YES" ]; then
     echo "=====================BUILD-UCLIBC======================="
+
     cp -fv ${ID_UCLIBC}.config $ID_UCLIBC/.config
     cd $ID_UCLIBC
-    (make -j${HOST_NCPU} && \
+    (make  -j${HOST_NCPU} > /dev/null 2>&1 && \
      make install) || exit 1
     cd ..
 fi
@@ -174,8 +177,8 @@ if [ "$DO_GCCCPP" = "YES" ]; then
         --disable-libgomp --disable-nls \
         --with-sysroot="$PREFIX" \
         --enable-languages=c++ && \
-    make -j${HOST_NCPU} all-host all-target-libgcc all-target-libstdc++-v3 && \
-    make install-host install-target-libgcc install-target-libstdc++-v3) || exit 1
+    make -j${HOST_NCPU} all-host all-target-libgcc all-target-libstdc++-v3 > /dev/null 2>&1  && \
+    make install-host install-target-libgcc install-target-libstdc++-v3 > /dev/null 2>&1  ) || exit 1
     cd ..
 fi
 
