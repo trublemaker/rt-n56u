@@ -160,6 +160,9 @@ dir_$(CONFIG_FIRMWARE_INCLUDE_IPERF3)			+= iperf3
 dir_$(CONFIG_FIRMWARE_INCLUDE_3PROXY)			+= 3proxy
 dir_$(CONFIG_FIRMWARE_INCLUDE_vlmcsd)			+= vlmcsd
 
+#mao ++ 2020.11.06
+dir_$(CONFIG_FIRMWARE_INCLUDE_IFTOP)		+= iftop
+
 ##$(info dir_$(CONFIG_FIRMWARE_INCLUDE_3PROXY)			+= 3proxy )
 
 ifdef CONFIG_BLK_DEV_SD
