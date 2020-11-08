@@ -2,17 +2,12 @@ SRC_NAME = iftop-1.0pre4
 
 THISDIR = $(shell pwd)
 
-all: download_test extract_test config_test
+all: extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
 
-download_test:
-	#( if [ ! -f $(SRC_NAME).tar.gz ]; then \
-	#	wget -t5 --timeout=20 --no-check-certificate -O $(SRC_NAME).tar.gz $(SRC_URL); \
-	#fi )
-	
 extract_test:
 	( if [ ! -d $(SRC_NAME) ]; then \
-			git clone $(SRC_URL) $(SRC_NAME); \
+			tar -xf $(SRC_NAME).tar.gz; \
 	   else \
 			cd $(SRC_NAME) ; \
 			##git pull ;\

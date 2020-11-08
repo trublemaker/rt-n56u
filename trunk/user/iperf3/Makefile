@@ -35,6 +35,7 @@ configure:
 	./configure \
 		--prefix=/usr \
 		--without-openssl \
+		--enable-shared=no \
 		--host=$(HOST_TARGET) \
 		--build=$(HOST_BUILD) ; \
 	)
@@ -46,5 +47,7 @@ clean:
 	rm -f config_done
 
 romfs:
-	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_NAME)/src/.libs/iperf3 /usr/bin/iperf3
-	cp -fP $(THISDIR)/$(SRC_NAME)/src/.libs/libiperf.so* $(ROMFSDIR)/lib
+	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_NAME)/src/iperf3 /usr/bin/iperf3
+	( if [ -f $(THISDIR)/$(SRC_NAME)/src/.libs/libiperf.so ]; then \
+		  cp -fP $(THISDIR)/$(SRC_NAME)/src/.libs/libiperf.so* $(ROMFSDIR)/lib; \
+	fi )
