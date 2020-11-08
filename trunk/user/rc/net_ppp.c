@@ -118,7 +118,7 @@ safe_start_xl2tpd(void)
 		fprintf(fp,
 			    "autodial = yes\n"
 			    "redial = yes\n"
-			    "redial timeout = 15\n"
+			    "redial timeout = 31\n"
 			    "tx bps = 100000000\n"
 			    "rx bps = 100000000\n\n");
 		
