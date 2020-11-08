@@ -159,6 +159,7 @@ dir_$(CONFIG_FIRMWARE_INCLUDE_NJIT_CLIENT)		+= njit-client
 dir_$(CONFIG_FIRMWARE_INCLUDE_IPERF3)			+= iperf3
 dir_$(CONFIG_FIRMWARE_INCLUDE_3PROXY)			+= 3proxy
 dir_$(CONFIG_FIRMWARE_INCLUDE_vlmcsd)			+= vlmcsd
+dir_$(CONFIG_FIRMWARE_INCLUDE_SOCAT)			+= socat
 
 ##$(info dir_$(CONFIG_FIRMWARE_INCLUDE_3PROXY)			+= 3proxy )
 
