@@ -217,10 +217,16 @@ static void load_history_raw(void)
 		if (i > 0)
 			snprintf(h_path, sizeof(h_path), "%s/%s.%s", "/etc/storage", "rstats-history", g_history_desc[i].ifdesc);
 		n_len = f_read(h_path, &hist, sizeof(history_t));
-		if (n_len == sizeof(history_t) && hist.id == CURRENT_ID) {
-			memcpy(&g_history[i], &hist, sizeof(history_t));
+		if (n_len>0 && n_len <= sizeof(history_t) && hist.id == CURRENT_ID) {
+			logmessage("rstate", "load_history_raw %d-%d", n_len,sizeof(history_t));
+			memcpy(&g_history[i], &hist, n_len); //sizeof(history_t)
 			if (is_history_active(&hist))
 				g_history_desc[i].is_active = 1;
+		}else if(n_len>0 && n_len > sizeof(history_t) && hist.id == CURRENT_ID){
+			logmessage("rstate", "load_history_raw %d-%d", n_len,sizeof(history_t));
+			memcpy(&g_history[i], &hist, sizeof(history_t));
+			if (is_history_active(&hist))
+				g_history_desc[i].is_active = 1;		
 		}
 	}
 }
@@ -449,14 +455,15 @@ static void bump_history(data_t *data, int *tail, int max, uint32_t xnow, uint64
 		for (i = max - 1; i >= 0; --i) {
 			if (data[i].xtime == xnow) {
 				t = i;
-				printf("t=%i,break\n", t);
+				printf("bump_history t=%d,break\n",t);
+				//logmessage("rstate", "bump_history t=%i,break\n", t);
 				break;
 			}
 		}
 		if (i < 0) {
 			*tail = t = (t + 1) % max;
 			data[t].xtime = xnow;
-			printf("t=%d,new\n",t);
+			printf("bump_history t=%d,new\n",t);
 			memset(data[t].counter, 0, sizeof(data[0].counter));
 		}
 	}
