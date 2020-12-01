@@ -262,10 +262,14 @@ func_fill()
 #modprobe xt_set
 
 #drop caches
-sync && echo 3 > /proc/sys/vm/drop_caches
+#sync && echo 3 > /proc/sys/vm/drop_caches
 
 #start iperf3
-/usr/bin/iperf3 -s -D
+/usr/bin/iperf3 -sD
+
+/sbin/watch_wan.sh &
+
+
 
 EOF
 		chmod 755 "$script_started"
