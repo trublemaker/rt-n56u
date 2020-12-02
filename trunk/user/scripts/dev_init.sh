@@ -96,6 +96,11 @@ if [ -f /etc/storage/authorized_keys ] ; then
 	chmod 600 /home/root/.ssh/authorized_keys
 fi
 
+if [ -f /etc/storage/openssh/id_rsa ] ; then
+	cp -f /etc/storage/openssh/id_rsa /home/root/.ssh
+	chmod 600 /home/root/.ssh/id_rsa
+fi
+
 # perform start script
 if [ -x /etc/storage/start_script.sh ] ; then
 	/etc/storage/start_script.sh

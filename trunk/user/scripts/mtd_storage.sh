@@ -269,6 +269,7 @@ func_fill()
 
 /sbin/watch_wan.sh &
 
+[ -f /etc/storage/3proxy.cfg ]  && 3proxy /etc/storage/3proxy.cfg
 
 
 EOF
