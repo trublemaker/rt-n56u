@@ -6,8 +6,8 @@
 #define BOARD_VENDOR_NAME	"ZX Technology"
 #define BOARD_VENDOR_URL	"http://www.ZX.com/"
 #define BOARD_MODEL_URL		"http://www.ZX.com/"
-#define BOARD_BOOT_TIME		25
-#define BOARD_FLASH_TIME	10
+#define BOARD_BOOT_TIME		30
+#define BOARD_FLASH_TIME	15
 #undef BOARD_GPIO_BTN_FN1
 #define BOARD_GPIO_BTN_RESET	18
 #define BOARD_GPIO_BTN_WPS	10
