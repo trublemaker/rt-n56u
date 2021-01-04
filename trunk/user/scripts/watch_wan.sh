@@ -9,7 +9,8 @@
  
 irqold=`cat /proc/interrupts | grep eth2 | awk '{print $4}'`
 
-#11: 21 0 16363663 0  MIPS GIC  eth2
+#   CPU0 CPU1 CPU2     CPU3   
+#11: 21   0   16363663 0  MIPS GIC  eth2
 
 echo "eth eth irqs " $irqold
 
@@ -20,7 +21,6 @@ do
 
         if [ "$linkstate" -eq "1" ] 
         then
-
                 sleep 1
                 irqs=`cat /proc/interrupts | grep eth2 | awk '{print $4}'`
                 #echo "$irqold  "   "    $irqs"
@@ -34,5 +34,6 @@ do
                 fi
                 irqold=$irqs
         fi
-
+		
+		sleep 1
 done
