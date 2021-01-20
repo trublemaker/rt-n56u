@@ -133,7 +133,7 @@ int main(int argc, char** argv) {
         clock_gettime(CLOCK_MONOTONIC ,&tv_now );
         GetNetRate(fd, netdevice, &recvcur, &sendcur);
         
-		deltatime =tv_now.tv_sec + tv_now.tv_nsec * 0.000001 - tv_pre.tv_sec - tv_pre.tv_nsec * 0.000001;
+		deltatime =tv_now.tv_sec + tv_now.tv_nsec * 0.000000001 - tv_pre.tv_sec - tv_pre.tv_nsec * 0.000000001;
 		
 		recvrate = (recvcur - recvpre) / (1024 * deltatime);        
 		if (recvrate < 0) recvrate = 0; 

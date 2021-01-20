@@ -1,4 +1,4 @@
-EXEC = mcast speed rsconv settime
+EXEC = mcast speed rsconv settime upeeprom watchwan
 
 CC ?= mipsel-linux-uclibc-gcc 
 
@@ -31,12 +31,19 @@ rsconv: rsconv.o
 settime: settime.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)	
 
+upeeprom: upeeprom.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)	
+watchwan: watchwan.o 
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)	
+
 romfs:
 	$(ROMFSINST) mcast /usr/bin/mcast
 	$(ROMFSINST) speed /usr/bin/speed
 	$(ROMFSINST) rsconv /usr/bin/rsconv
 	$(ROMFSINST) settime /usr/bin/settime
-	
+	$(ROMFSINST) upeeprom /usr/bin/upeeprom
+	$(ROMFSINST) watchwan /usr/bin/watchwan
+
 clean:
 	rm -f $(EXEC) *.o
 
