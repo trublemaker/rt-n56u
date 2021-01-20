@@ -3,9 +3,27 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <unistd.h>
-
+#include <time.h>
 #include <sys/ioctl.h>
 #include<fcntl.h>
+
+#if defined (USE_SINGLE_MAC)
+	#define dev "eth2\n"
+#else
+	#define dev "eth3\n"
+#endif
+
+#define TIMESEC 2
+
+/*
+#define STR1(R) #R	 
+#define STR2(R) STR1(R)
+
+#pragma message "USE_SINGLE_MAC: " STR2( USE_SINGLE_MAC )
+#pragma message "dev: " STR2( dev )
+
+#define main xxxx
+*/
 
 /*
 
@@ -155,7 +173,6 @@ int main(int argc, char *argv[])
 	unsigned long long count=0;
 
 	memset(buff, 0, sizeof(buff));
-	char *dev = "eth2\n";
 	char tempstr[16][16] = {0};
 
 	long long interrupts[4] = {0};
@@ -174,6 +191,14 @@ int main(int argc, char *argv[])
 
 	long long sum=0;
 	long long sum_pre=1;
+	
+	printf("watch wan\nCopyright (C) footlog.mao \n\n");
+
+	if (daemon(0, 1) < 0) /*1 stdin/out/err no change,0 to null*/
+		{
+		perror("daemon");
+		exit(errno);
+	}
 
 	while(1){
 
@@ -183,12 +208,12 @@ int main(int argc, char *argv[])
 			clock_gettime(CLOCK_MONOTONIC ,&tv_now );
 			sum = CalIrqSum(dev,fd);
 			if(sum_pre==sum){
-				printf("restart wan port.\n");exit(0);
-				//# mtk_esw  41 1 0
-				//mtk_esw_ioctl(41,0,&arg);
+				printf("restart wan port.\n");//exit(0);
+				//#mtk_esw  41 1 0   #mtk_esw  41 1 1 
+				mtk_esw_ioctl(41,0,&arg);
+				usleep(200*1000);
+				mtk_esw_ioctl(41,1,&arg);
 				sleep(1);
-				//mtk_esw_ioctl(41,1,&arg);
-				//sleep(3);
 			}
 
 			deltatime =tv_now.tv_sec + tv_now.tv_nsec * 0.000000001 - tv_pre.tv_sec - tv_pre.tv_nsec * 0.000000001;
@@ -197,29 +222,16 @@ int main(int argc, char *argv[])
 			printf("eth2 %lld %lld irq rate: %7.2f  time:%8gs  count:%6llu\n",sum_pre,sum,recvrate,deltatime,count);
 			sum_pre=sum;
 			clock_gettime(CLOCK_MONOTONIC ,&tv_pre );
-			//sleep(1);
-			usleep(100*1000);
+
+			//usleep(100*1000);
+			sleep(TIMESEC);
 		}
 		else{
-			sleep(2);
+			sleep(TIMESEC);
 		}
 		
 		count++;
 	}
-	
-	if (1)	return 0;
-
-	if (NULL == (fstream = popen("ifconfig", "r")))
-	{
-		fprintf(stderr, "execute command failed: %s", strerror(errno));
-		//return -1;
-	}
-
-	while (NULL != fgets(buff, sizeof(buff), fstream))
-	{
-		printf("%s", buff);
-	}
-	pclose(fstream);
 
 	return 0;
 }
